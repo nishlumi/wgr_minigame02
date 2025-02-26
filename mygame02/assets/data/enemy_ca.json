@@ -1,0 +1,136 @@
+{
+    "type": 4,
+    "eachclass" : {
+        "normal" : [
+            {
+                "class" : 0,
+                "lv" : 1,
+                "motionlst" : [
+                    "eCA_a","eCA_b"
+                ],
+                "maxhp" : 6,
+                "dir" : {
+                    "x" : 0,
+                    "y" : 1
+                },
+                "move_interval" : 2,
+                "movespeed" : 0.9,
+                "point" : 10,
+                "move_additional" : {
+                    "area" : {
+                        "front" : false,
+                        "back" : false,
+                        "left" : true,
+                        "right" : true
+                    },
+                    "frequency" : [90, 120],
+                    "frame_time" : 7
+                },
+                "commands" : [
+                    {
+                        "interval" : [50, 100],
+                        "command" : {
+                            "type" : 0,
+                            "dir" : {
+                                "x" : 0,
+                                "y" : 1
+                            }
+
+                        }
+                    }
+                ],
+                "alive_time" : 0
+            },
+            {
+                "class" : 0,
+                "lv" : 2,
+                "motionlst" : [
+                    "eCA_a","eCA_b"
+                ],
+                "maxhp" : 8,
+                "dir" : {
+                    "x" : 0,
+                    "y" : 1
+                },
+                "move_interval" : 2,
+                "movespeed" : 0.9,
+                "point" : 20,
+                "move_additional" : {
+                    "area" : {
+                        "front" : false,
+                        "back" : false,
+                        "left" : true,
+                        "right" : true
+                    },
+                    "frequency" : [90, 120],
+                    "frame_time" : 7
+                },
+                "commands" : [
+                    {
+                        "interval" : [50, 100],
+                        "command" : {
+                            "type" : 0,
+                            "dir" : {
+                                "x" : 0,
+                                "y" : 1
+                            }
+
+                        }
+                    }
+                ],
+                "alive_time" : 0
+            },
+            {
+                "class" : 0,
+                "lv" : 3,
+                "motionlst" : [
+                    "eCA_a","eCA_b"
+                ],
+                "maxhp" : 10,
+                "dir" : {
+                    "x" : 0,
+                    "y" : 1
+                },
+                "move_interval" : 2,
+                "movespeed" : 1,
+                "point" : 25,
+                "move_additional" : {
+                    "area" : {
+                        "front" : false,
+                        "back" : false,
+                        "left" : true,
+                        "right" : true
+                    },
+                    "frequency" : [90, 120],
+                    "frame_time" : 7
+                },
+                "commands" : [
+                    {
+                        "interval" : [80, 120],
+                        "command" : {
+                            "type" : 0,
+                            "dir" : {
+                                "x" : 0,
+                                "y" : 1
+                            }
+
+                        }
+                    },
+                    {
+                        "interval" : [50, 80],
+                        "command" : {
+                            "type" : 4,
+                            "dir" : {
+                                "x" : 0,
+                                "y" : 1
+                            }
+
+                        }
+                    }
+                ],
+                "alive_time" : 0
+            }
+        ]
+    }
+    
+}

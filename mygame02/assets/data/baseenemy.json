@@ -1,0 +1,53 @@
+{
+    "type": 0,
+    "eachclass" : {
+        "normal" : [
+            {
+                "class" : 0,
+                "lv" : 1,
+                "motionlst" : [
+                    "eDD1_a","eDD1_b"
+                ],
+                "maxhp" : 4,
+                "move_interval" : 3,
+                "dir" : {
+                    "x" : 0,
+                    "y" : 1
+                },
+                "movespeed" : 1,
+                "point" : 1,
+                "move_additional" : {
+                    "area" : {
+                        "front" : false,
+                        "back" : false,
+                        "left" : false,
+                        "right" : false
+                    },
+                    "frequency" : [60, 90]
+                },
+                "commands" : [
+                    {
+                        "interval" : [60, 90],
+                        "command" : {
+                            "type" : 4,
+                            "power" : 1,
+                            "blastpower" : 0,
+                            "dir" : {
+                                "x" : 0,
+                                "y" : 1
+                            },
+                            "area" : {
+                                "left" : false,
+                                "right" : false
+                            }
+
+                        }
+                    }
+                ],
+                "alive_time" : 15,
+                "max_count" : 0
+            }
+        ]
+    }
+    
+}

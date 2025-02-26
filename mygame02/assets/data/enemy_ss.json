@@ -1,0 +1,122 @@
+{
+    "type": 0,
+    "eachclass" : {
+        "normal" : [
+            {
+                "class" : 0,
+                "lv" : 1,
+                "motionlst" : [
+                    "eSS_a","eSS_b"
+                ],
+                "maxhp" : 3,
+                "dir" : {
+                    "x" : 0,
+                    "y" : 1
+                },
+                "move_interval" : 3,
+                "movespeed" : 1,
+                "point" : 100,
+                "move_additional" : {
+                    "area" : {
+                        "front" : false,
+                        "back" : false,
+                        "left" : false,
+                        "right" : false
+                    },
+                    "frequency" : [90, 120]
+                },
+                "commands" : [
+                    {
+                        "interval" : [100, 150],
+                        "command" : {
+                            "type" : 1,
+                            "dir" : {
+                                "x" : 0,
+                                "y" : 1
+                            }
+
+                        }
+                    }
+                ],
+                "alive_time" : 0
+            },
+            {
+                "class" : 0,
+                "lv" : 2,
+                "motionlst" : [
+                    "eSS_a","eSS_b"
+                ],
+                "maxhp" : 4,
+                "dir" : {
+                    "x" : 0,
+                    "y" : 1
+                },
+                "move_interval" : 3,
+                "movespeed" : 1,
+                "point" : 200,
+                "move_additional" : {
+                    "area" : {
+                        "front" : false,
+                        "back" : false,
+                        "left" : false,
+                        "right" : false
+                    },
+                    "frequency" : [90, 120]
+                },
+                "commands" : [
+                    {
+                        "interval" : [90, 120],
+                        "command" : {
+                            "type" : 1,
+                            "dir" : {
+                                "x" : 0,
+                                "y" : 1
+                            }
+
+                        }
+                    }
+                ],
+                "alive_time" : 0
+            },
+            {
+                "class" : 0,
+                "lv" : 3,
+                "motionlst" : [
+                    "eSS_a","eSS_b"
+                ],
+                "maxhp" : 6,
+                "dir" : {
+                    "x" : 0,
+                    "y" : 1
+                },
+                "move_interval" : 3,
+                "movespeed" : 1,
+                "point" : 300,
+                "move_additional" : {
+                    "area" : {
+                        "front" : false,
+                        "back" : false,
+                        "left" : true,
+                        "right" : true
+                    },
+                    "frequency" : [90, 120]
+                },
+                "commands" : [
+                    {
+                        "interval" : [90, 120],
+                        "command" : {
+                            "type" : 1,
+                            "dir" : {
+                                "x" : 0,
+                                "y" : 1
+                            }
+
+                        }
+                    }
+                ],
+                "alive_time" : 0
+            }
+        ]
+    }
+    
+}

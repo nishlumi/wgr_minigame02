@@ -1,0 +1,163 @@
+{
+    "type": 5,
+    "eachclass" : {
+        "normal" : [
+            {
+                "class" : 0,
+                "lv" : 1,
+                "motionlst" : [
+                    "eCVL_a","eCVL_b"
+                ],
+                "maxhp" : 5,
+                "dir" : {
+                    "x" : 0,
+                    "y" : 0
+                },
+                "move_interval" : 0,
+                "movespeed" : 1,
+                "point" : 20,
+                "move_additional" : {
+                    "area" : {
+                        "front" : true,
+                        "back" : true,
+                        "left" : true,
+                        "right" : true
+                    },
+                    "frequency" : [100, 120],
+                    "frame_time" : 30
+                },
+                "commands" : [
+                    {
+                        "interval" : [90, 120],
+                        "command" : {
+                            "type" : 2,
+                            "blastpower" : 0.01,
+                            "dir" : {
+                                "x" : 0,
+                                "y" : 1
+                            }
+
+                        }
+                    },
+                    {
+                        "interval" : [50, 100],
+                        "command" : {
+                            "type" : 6,
+                            "dir" : {
+                                "x" : 0,
+                                "y" : 1
+                            }
+
+                        }
+                    }
+                ],
+                "alive_time" : 30
+            },
+            {
+                "class" : 0,
+                "lv" : 2,
+                "motionlst" : [
+                    "eCVL_a","eCVL_b"
+                ],
+                "maxhp" : 8,
+                "dir" : {
+                    "x" : 0,
+                    "y" : 0
+                },
+                "move_interval" : 0,
+                "movespeed" : 1,
+                "point" : 30,
+                "move_additional" : {
+                    "area" : {
+                        "front" : true,
+                        "back" : true,
+                        "left" : true,
+                        "right" : true
+                    },
+                    "frequency" : [100, 120],
+                    "frame_time" : 40
+                },
+                "commands" : [
+                    {
+                        "interval" : [90, 120],
+                        "command" : {
+                            "type" : 2,
+                            "blastpower" : 0.01,
+                            "dir" : {
+                                "x" : 0,
+                                "y" : 1
+                            }
+
+                        }
+                    },
+                    {
+                        "interval" : [50, 100],
+                        "command" : {
+                            "type" : 7,
+                            "blastpower" : 0.01,
+                            "dir" : {
+                                "x" : 0,
+                                "y" : 1
+                            }
+
+                        }
+                    }
+                ],
+                "alive_time" : 30
+            },
+            {
+                "class" : 0,
+                "lv" : 3,
+                "motionlst" : [
+                    "eCVL_a","eCVL_b"
+                ],
+                "maxhp" : 10,
+                "dir" : {
+                    "x" : 0,
+                    "y" : 0
+                },
+                "move_interval" : 0,
+                "movespeed" : 1,
+                "point" : 40,
+                "move_additional" : {
+                    "area" : {
+                        "front" : true,
+                        "back" : true,
+                        "left" : true,
+                        "right" : true
+                    },
+                    "frequency" : [100, 120],
+                    "frame_time" : 40
+                },
+                "commands" : [
+                    {
+                        "interval" : [90, 120],
+                        "command" : {
+                            "type" : 2,
+                            "blastpower" : 0.01,
+                            "dir" : {
+                                "x" : 0,
+                                "y" : 1
+                            }
+
+                        }
+                    },
+                    {
+                        "interval" : [50, 70],
+                        "command" : {
+                            "type" : 7,
+                            "blastpower" : 0.01,
+                            "dir" : {
+                                "x" : 0,
+                                "y" : 1
+                            }
+
+                        }
+                    }
+                ],
+                "alive_time" : 30
+            }
+        ]
+    }
+    
+}

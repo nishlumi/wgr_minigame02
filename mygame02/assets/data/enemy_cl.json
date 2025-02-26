@@ -1,0 +1,147 @@
+{
+    "type": 3,
+    "eachclass" : {
+        "normal" : [
+            {
+                "class" : 0,
+                "lv" : 1,
+                "motionlst" : [
+                    "eCL_a","eCL_b"
+                ],
+                "maxhp" : 4,
+                "dir" : {
+                    "x" : 0,
+                    "y" : 1
+                },
+                "move_interval" : 2,
+                "movespeed" : 1,
+                "point" : 5,
+                "move_additional" : {
+                    "area" : {
+                        "front" : false,
+                        "back" : false,
+                        "left" : true,
+                        "right" : true
+                    },
+                    "frequency" : [100, 150],
+                    "frame_time" : 15
+                },
+                "commands" : [
+                    {
+                        "interval" : [80, 120],
+                        "command" : {
+                            "type" : 0,
+                            "dir" : {
+                                "x" : 0,
+                                "y" : 1
+                            }
+
+                        }
+                    }
+                ],
+                "alive_time" : 0
+            },
+            {
+                "class" : 0,
+                "lv" : 2,
+                "motionlst" : [
+                    "eCL_a","eCL_b"
+                ],
+                "maxhp" : 6,
+                "dir" : {
+                    "x" : 0,
+                    "y" : 1
+                },
+                "move_interval" : 3,
+                "movespeed" : 1,
+                "point" : 10,
+                "move_additional" : {
+                    "area" : {
+                        "front" : false,
+                        "back" : false,
+                        "left" : true,
+                        "right" : true
+                    },
+                    "frequency" : [100, 150],
+                    "frame_time" : 15
+                },
+                "commands" : [
+                    {
+                        "interval" : [80, 120],
+                        "command" : {
+                            "type" : 0,
+                            "dir" : {
+                                "x" : 0,
+                                "y" : 1
+                            }
+
+                        }
+                    },
+                    {
+                        "interval" : [100, 150],
+                        "command" : {
+                            "type" : 6,
+                            "dir" : {
+                                "x" : 0,
+                                "y" : 1
+                            }
+
+                        }
+                    }
+                ],
+                "alive_time" : 0
+            },
+            {
+                "class" : 0,
+                "lv" : 3,
+                "motionlst" : [
+                    "eCL_a","eCL_b"
+                ],
+                "maxhp" : 8,
+                "dir" : {
+                    "x" : 0,
+                    "y" : 1
+                },
+                "move_interval" : 3,
+                "movespeed" : 1,
+                "point" : 15,
+                "move_additional" : {
+                    "area" : {
+                        "front" : false,
+                        "back" : false,
+                        "left" : true,
+                        "right" : true
+                    },
+                    "frequency" : [90, 120],
+                    "frame_time" : 15
+                },
+                "commands" : [
+                    {
+                        "interval" : [90, 120],
+                        "command" : {
+                            "type" : 0,
+                            "dir" : {
+                                "x" : 0,
+                                "y" : 1
+                            }
+
+                        }
+                    },
+                    {
+                        "interval" : [50, 80],
+                        "command" : {
+                            "type" : 4,
+                            "dir" : {
+                                "x" : 0,
+                                "y" : 1
+                            }
+
+                        }
+                    }
+                ],
+                "alive_time" : 0
+            }
+        ]
+    }
+    
+}

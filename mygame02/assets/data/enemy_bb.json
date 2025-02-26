@@ -1,0 +1,129 @@
+{
+    "type": 8,
+    "eachclass" : {
+        "normal" : [
+            {
+                "class" : 0,
+                "lv" : 1,
+                "motionlst" : [
+                    "eBB_a","eBB_b"
+                ],
+                "maxhp" : 10,
+                "dir" : {
+                    "x" : 0,
+                    "y" : 0
+                },
+                "move_interval" : 0,
+                "movespeed" : 0.5,
+                "point" : 150,
+                "move_additional" : {
+                    "area" : {
+                        "front" : true,
+                        "back" : true,
+                        "left" : true,
+                        "right" : true
+                    },
+                    "frequency" : [100, 120],
+                    "frame_time" : 10
+                },
+                "commands" : [
+                    {
+                        "interval" : [90, 120],
+                        "command" : {
+                            "type" : 3,
+                            "power" : 2,
+                            "blastpower" : 0.01,
+                            "dir" : {
+                                "x" : 0,
+                                "y" : 1
+                            }
+
+                        }
+                    }
+                ],
+                "alive_time" : 30
+            },
+            {
+                "class" : 0,
+                "lv" : 2,
+                "motionlst" : [
+                    "eBB_a","eBB_b"
+                ],
+                "maxhp" : 15,
+                "dir" : {
+                    "x" : 0,
+                    "y" : 0
+                },
+                "move_interval" : 0,
+                "movespeed" : 0.5,
+                "point" : 250,
+                "move_additional" : {
+                    "area" : {
+                        "front" : true,
+                        "back" : true,
+                        "left" : true,
+                        "right" : true
+                    },
+                    "frequency" : [100, 120],
+                    "frame_time" : 10
+                },
+                "commands" : [
+                    {
+                        "interval" : [90, 120],
+                        "command" : {
+                            "type" : 0,
+                            "blastpower" : 0.02,
+                            "dir" : {
+                                "x" : 0,
+                                "y" : 1
+                            }
+                        }
+                    }
+                ],
+                "alive_time" : 30
+            },
+            {
+                "class" : 0,
+                "lv" : 3,
+                "motionlst" : [
+                    "eBB_a","eBB_b"
+                ],
+                "maxhp" : 20,
+                "dir" : {
+                    "x" : 0,
+                    "y" : 0
+                },
+                "move_interval" : 0,
+                "movespeed" : 0.5,
+                "point" : 300,
+                "move_additional" : {
+                    "area" : {
+                        "front" : true,
+                        "back" : true,
+                        "left" : true,
+                        "right" : true
+                    },
+                    "frequency" : [100, 120],
+                    "frame_time" : 10
+                },
+                "commands" : [
+                    {
+                        "interval" : [90, 120],
+                        "command" : {
+                            "type" : 0,
+                            "power" : 2,
+                            "blastpower" : 0.05,
+                            "dir" : {
+                                "x" : 0,
+                                "y" : 1
+                            }
+
+                        }
+                    }
+                ],
+                "alive_time" : 30
+            }
+        ]
+    }
+    
+}
