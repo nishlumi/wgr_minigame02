@@ -17,5 +17,5 @@ Open web/mygame02.html
 
 or 
 
-https://kitao.github.io/pyxel/wasm/launcher/?play=nishlumi.wgr_minigame02.dist.mygame02&gamepad=enabled
+https://nishlumi.github.io/wgr_minigame02/
 

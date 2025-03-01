@@ -18,6 +18,9 @@ from scn_gamemode import GameModeScene
 from scene_mode_ta import SceneModeTimeAttack
 from scn_mode_surv import SceneModeSurvival
 from scn_map import MapScene
+#from scn_resultmode import ResultModeScene
+from scn_result_ta import ResultTimeAttackScene
+from scn_result_sur import ResultSurvivalScene
 from soundman  import SoundManager
 
 
@@ -48,6 +51,9 @@ class App:
             "gamemap" : MapScene(self.ope),
             "option": OptionScene(self.ope),
             "help" : HelpScene(self.ope),
+            #"resultmode" : ResultModeScene(self.ope),
+            "resulttimeattack" : ResultTimeAttackScene(self.ope),
+            "resultsurvival" : ResultSurvivalScene(self.ope),
         }
         #self.current_scene = "start"
         

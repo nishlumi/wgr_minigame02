@@ -3,12 +3,13 @@ import pyxel
 from mycls import GameObject, ShipJob, AttackCommand, BaseEffect, Bounds,  calc_collision, Vector2, Item
 from appconst import PLAYER_MOTION
 
-MAXLV = 4
+MAXLV = 5
 
 class Player(GameObject):    
     def __init__(self, app, x, y):
         super().__init__(app, x, y)
         self.lv = 1
+        self.name = ""
         self.hp = 0
         self.maxhp = 0
         self.is_middamage = False
@@ -152,8 +153,6 @@ class Player(GameObject):
                 ishit["blast"] = calc_collision(selfleft, selfright, selftop, selfbottom, 
                               newpos.x, newpos.x+shot.img_bnd.w, newpos.y, newpos.y+shot.img_bnd.h
                 )
-                if ishit["blast"]:
-                    print("front hit!")
             
             if not ishit["blast"] and shot.area.back:
                 newpos.x = shot.x
@@ -162,8 +161,6 @@ class Player(GameObject):
                 ishit["blast"] = calc_collision(selfleft, selfright, selftop, selfbottom, 
                               newpos.x, newpos.x+shot.img_bnd.w, newpos.y, newpos.y+shot.img_bnd.h
                 )
-                if ishit["blast"]:
-                    print("back hit!")
         
             if shot.dir.y == -1:
                 if not ishit["blast"] and shot.area.front_left:
@@ -173,8 +170,6 @@ class Player(GameObject):
                     ishit["blast"] = calc_collision(selfleft, selfright, selftop, selfbottom, 
                               newpos.x, newpos.x+shot.img_bnd.w, newpos.y, newpos.y+shot.img_bnd.h
                     )
-                    if ishit["blast"]:
-                        print("front left hit!")
                 if not ishit["blast"] and shot.area.front_right:
                     newpos.x = shot.x + shot.img_bnd.w
                     newpos.y = shot.y + shot.img_bnd.h * shot.dir.y
@@ -182,8 +177,6 @@ class Player(GameObject):
                     ishit["blast"] = calc_collision(selfleft, selfright, selftop, selfbottom, 
                               newpos.x, newpos.x+shot.img_bnd.w, newpos.y, newpos.y+shot.img_bnd.h
                     )
-                    if ishit["blast"]:
-                        print("front right hit!")
                 
                 if not ishit["blast"] and shot.area.back_left:
                     newpos.x = shot.x + (shot.img_bnd.w * -1)
@@ -192,8 +185,6 @@ class Player(GameObject):
                     ishit["blast"] = calc_collision(selfleft, selfright, selftop, selfbottom, 
                               newpos.x, newpos.x+shot.img_bnd.w, newpos.y, newpos.y+shot.img_bnd.h
                     )
-                    if ishit["blast"]:
-                        print("back left hit!")
                 if not ishit["blast"] and shot.area.back_right:
                     newpos.x = shot.x + shot.img_bnd.w
                     newpos.y = shot.y +  shot.img_bnd.h * shot.dir.y * shot.dir.y
@@ -201,8 +192,6 @@ class Player(GameObject):
                     ishit["blast"] = calc_collision(selfleft, selfright, selftop, selfbottom, 
                               newpos.x, newpos.x+shot.img_bnd.w, newpos.y, newpos.y+shot.img_bnd.h
                     )
-                    if ishit["blast"]:
-                        print("back right hit!")
                 
                 if not ishit["blast"] and shot.area.left:
                     newpos.x = shot.x + (shot.img_bnd.w * -1)
@@ -211,8 +200,6 @@ class Player(GameObject):
                     ishit["blast"] = calc_collision(selfleft, selfright, selftop, selfbottom, 
                               newpos.x, newpos.x+shot.img_bnd.w, newpos.y, newpos.y+shot.img_bnd.h
                     )
-                    if ishit["blast"]:
-                        print("left hit!")
                 if not ishit["blast"] and shot.area.right:
                     newpos.x = shot.x + shot.img_bnd.w
                     newpos.y = shot.y
@@ -220,8 +207,6 @@ class Player(GameObject):
                     ishit["blast"] = calc_collision(selfleft, selfright, selftop, selfbottom, 
                               newpos.x, newpos.x+shot.img_bnd.w, newpos.y, newpos.y+shot.img_bnd.h
                     )
-                    if ishit["blast"]:
-                        print("right hit!")
             elif shot.dir.y == 1:
                 if not ishit["blast"] and shot.area.front_left:
                     newpos.x = shot.x +  shot.img_bnd.w
@@ -230,8 +215,6 @@ class Player(GameObject):
                     ishit["blast"] = calc_collision(selfleft, selfright, selftop, selfbottom, 
                               newpos.x, newpos.x+shot.img_bnd.w, newpos.y, newpos.y+shot.img_bnd.h
                     )
-                    if ishit["blast"]:
-                        print("front left hit!")
                 if not ishit["blast"] and shot.area.front_right:
                     newpos.x = shot.x + (shot.img_bnd.w * -1)
                     newpos.y = shot.y + shot.img_bnd.h * shot.dir.y
@@ -239,8 +222,6 @@ class Player(GameObject):
                     ishit["blast"] = calc_collision(selfleft, selfright, selftop, selfbottom, 
                               newpos.x, newpos.x+shot.img_bnd.w, newpos.y, newpos.y+shot.img_bnd.h
                     )
-                    if ishit["blast"]:
-                        print("front right hit!")
                 
                 if not ishit["blast"] and shot.area.back_left:
                     newpos.x = shot.x +  shot.img_bnd.w
@@ -249,8 +230,6 @@ class Player(GameObject):
                     ishit["blast"] = calc_collision(selfleft, selfright, selftop, selfbottom, 
                               newpos.x, newpos.x+shot.img_bnd.w, newpos.y, newpos.y+shot.img_bnd.h
                     )
-                    if ishit["blast"]:
-                        print("back left hit!")
                 if not ishit["blast"] and shot.area.back_right:
                     newpos.x = shot.x + (shot.img_bnd.w * -1)
                     newpos.y = shot.y +  shot.img_bnd.h * shot.dir.y * shot.dir.y
@@ -258,8 +237,6 @@ class Player(GameObject):
                     ishit["blast"] = calc_collision(selfleft, selfright, selftop, selfbottom, 
                               newpos.x, newpos.x+shot.img_bnd.w, newpos.y, newpos.y+shot.img_bnd.h
                     )
-                    if ishit["blast"]:
-                        print("back right hit!")
                 
                 if not ishit["blast"] and shot.area.left:
                     newpos.x = shot.x +  shot.img_bnd.w
@@ -268,8 +245,6 @@ class Player(GameObject):
                     ishit["blast"] = calc_collision(selfleft, selfright, selftop, selfbottom, 
                               newpos.x, newpos.x+shot.img_bnd.w, newpos.y, newpos.y+shot.img_bnd.h
                     )
-                    if ishit["blast"]:
-                        print("left hit!")
                 if not ishit["blast"] and shot.area.right:
                     newpos.x = shot.x + (shot.img_bnd.w * -1)
                     newpos.y = shot.y
@@ -277,14 +252,14 @@ class Player(GameObject):
                     ishit["blast"] = calc_collision(selfleft, selfright, selftop, selfbottom, 
                               newpos.x, newpos.x+shot.img_bnd.w, newpos.y, newpos.y+shot.img_bnd.h
                     )
-                    if ishit["blast"]:
-                        print("right hit!")
         
         return ishit
     
     def death(self):
         if not self.parent.is_test:
-            self.job.destroy()
+            #self.job.destroy()
+            self.will_destroy = True
+            
     
     def set_buff(self, bufftype, bufftime):
         if bufftype == Item.TYPE_BOOST:
@@ -364,9 +339,9 @@ class Player(GameObject):
 
     def update(self):
         
-        if self.dir.x == 1:
+        if self.dir.x > 0:
             self.img_bnd.y = self.motionlst["right_move"]
-        elif self.dir.x == -1:
+        elif self.dir.x < 0:
             self.img_bnd.y = self.motionlst["left_move"]
         else:
             self.img_bnd.y = self.motionlst["down"]
@@ -396,6 +371,11 @@ class Player(GameObject):
         self.count_buff("rader1")
         self.count_buff("rader2")
         self.count_buff("shield")
+        
+        if self.x < -4:
+            self.x = -4
+        if self.x > pyxel.width - 16 :
+            self.x = pyxel.width - 16
         
     def update_shots(self):
         #---loop shot

@@ -32,10 +32,12 @@ class SceneModeSurvival(GameScene):
 
     def setup_ui(self):
         retimg = self.parent.imgbnk.get("larrow")
+        nextimg = self.parent.imgbnk.get("rarrow")
         self.ui = {
             "return": GUIImage(pos(0)+4,pos(0)+4,retimg.page, Bounds(retimg.x, retimg.y, retimg.w, retimg.h),pyxel.COLOR_BLACK),
-            "next": GUIImage(pos(13),pos(18),0, Bounds(8, 72, 8, 8),pyxel.COLOR_BLACK),
-            "txt_survival" : GUIText(self.parent.t("txt_survival"), pos(3),pos(1), self.parent.jp_font12, pyxel.COLOR_GREEN),
+            "hist": GUIImage(pos(13),pos(0)+4, nextimg.page, Bounds(nextimg.x, nextimg.y, nextimg.w, nextimg.h),pyxel.COLOR_BLACK),
+            "next": GUIImage(pos(13)+4,pos(18), retimg.page, Bounds(retimg.x, retimg.y, retimg.w, retimg.h),pyxel.COLOR_BLACK,rotate=180),
+            "txt_survival" : GUIText(self.parent.t("txt_survival"), pos(2),pos(0)+4, self.parent.jp_font12, pyxel.COLOR_GREEN),
             "txt_enemy": GUIText(self.parent.t("txt_enemy"), pos(1), pos(3),self.parent.jp_fontmisaki,color1=pyxel.COLOR_WHITE),
             "chk_enemy_vanguard" : GUICheckbox("DD,CL,CA", pos(2), pos(4)+4,font=self.parent.jp_fontmisaki,color1=pyxel.COLOR_WHITE),
             "chk_enemy_smallship" : GUICheckbox("SS,DD", pos(2), pos(6),font=self.parent.jp_fontmisaki,color1=pyxel.COLOR_WHITE),
@@ -49,11 +51,19 @@ class SceneModeSurvival(GameScene):
         
         self.ui["return"].selectable = True
         self.ui["return"].set_round(
+            rightui="hist",
+            bottomui="chk_enemy_vanguard"
+        )
+        self.ui["hist"].selectable = True
+        self.ui["hist"].set_round(
+            upui="next",
+            leftui="return",
             bottomui="chk_enemy_vanguard"
         )
         self.ui["next"].selectable = True
         self.ui["next"].set_round(
-            upui="chk_enemy_all"
+            upui="chk_enemy_all",
+            bottomui="hist"
         )
         self.ui["chk_enemy_vanguard"].set_round(
             upui="return",
@@ -88,6 +98,11 @@ class SceneModeSurvival(GameScene):
             #self.parent.setup_start()
         elif self.select == "next":
             self.decide_select()
+        elif self.select == "hist":
+            self.parent.sound.play_select()
+            self.parent.current_scene = "resultsurvival"
+            self.parent.states.survival_enemies = self.rule_select["forces"]
+            self.parent.setup_survival_result()
         elif self.select in ENEMY_FORCE_STR:
             self.rule_select["forces"] = ENEMY_FORCE_STR.index(self.select)
             for s in ENEMY_FORCE_STR:

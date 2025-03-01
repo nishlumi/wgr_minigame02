@@ -1,6 +1,6 @@
 import pyxel
 import copy
-from appconst import PLAYER_MOTION, ShipKind, CSV_ATTACKWEAK, CIP
+from appconst import PLAYER_MOTION, ShipKind, CSV_ATTACKWEAK, CIP, GameMode
 from imgbnk import IBNK, BankImageElement
 from myconfig import GameOperator
 
@@ -79,6 +79,8 @@ class GamePoint:
     RANK_B = 1
     RANK_A = 2
     RANK_S = 3
+    RANK_LIST = ["C", "B", "A", "S"]
+    RANK_IMAGE = ["victory_c","victory_b","victory_a","victory_s"]
     LV1 = 0
     LV2 = 1
     LV3 = 2
@@ -140,7 +142,15 @@ class GamePoint:
             self.ClassPoint(ShipKind.TYPE_BC), #---8: BB
         ]
     
-    def judgement(self):
+    def allsummary(self):
+        ret = {"cnt":0, "max":0}
+        for e in self.eachtype:
+            for i in [0,1,2]:
+                ret["cnt"] += e.summary_cur(i)
+                ret["max"] += e.summary_max(i)
+        return ret
+
+    def judgement(self, is_dead: bool = False):
         CLSN = 0
         CLSE = 1
         CLSS = 2
@@ -224,14 +234,56 @@ class GamePoint:
         #---defeat rate of all class
         if b_cnt / appear_kind_cnt >= 0.5:
             rank = self.RANK_B
+            if is_dead:
+                rank = self.RANK_C
         if a_cnt / appear_kind_cnt >= 0.8:
             rank = self.RANK_A
+            if is_dead:
+                rank = self.RANK_C
         if s_cnt / appear_kind_cnt >= 0.9:
             rank = self.RANK_S
+            if is_dead:
+                rank = self.RANK_B
+            
         
         return rank
+    def serialize(self, mode, mode_opt: dict, curdate, charaname, is_dead, rank):
+        ret = {}
+        ret["player"] = charaname
+        ret["lv"] = mode_opt["lv"]
+        ret["hp"] = mode_opt["hp"]
+        ret["maxhp"] = mode_opt["maxhp"]
+        ret["weapon"] = {
+            "main" : mode_opt["mainwpn"],
+            "sub" : mode_opt["subwpn"],
+        }
+        ret["play_date"] = curdate
+        ret["point"] = self.summary
+        ret["rank"] = rank
+        ret["summary"] = self.allsummary()
+        ret["enemies"] = []
+        for i,ec in enumerate(self.eachtype):
+            enm = {}
+            enm["type"] = i
+            for j,cls in enumerate(ec.cur):
+                enm["class"] = j
+                for l,lv in enumerate(cls):
+                    enm["lv"] = l
+                    enm["cnt"] = lv
+                    enm["max"] = ec.max[j][l]
+                    if enm["max"] > 0:
+                        ret["enemies"].append(enm.copy())
+        if mode == GameMode.TYPE_TIMEATTACK:
+            #ret["time"] = mode_opt["time"]
+            #ret["forces"] = mode_opt["forces"]
+            #ret["freqlv"] = mode_opt["freqlv"]
+            ret["complete"] = False if is_dead else True
+            ret["condition_time"] = mode_opt["time"]
+        elif mode == GameMode.TYPE_SURVIVAL:
+            ret["wave"] = mode_opt["wave"]
+            ret["play_time"] = mode_opt["play_time"]
+        return ret
 
-        
 class GameObject:
     def __init__(self, app: GameOperator, x, y):
         self.parent: GameOperator = app
@@ -264,7 +316,12 @@ class GameObject:
 
 class KeyManager:
     def __init__(self):
-        pass
+        self.right_pressed = False
+        self.second_right_pressed = False
+        self.right_pressframe = 0
+        self.left_pressed = False
+        self.second_left_pressed = False
+        self.left_pressframe = 0
 
     def _basic_judge(self, keys: list, pressing: bool = False):
         ishit = False
@@ -288,17 +345,35 @@ class KeyManager:
     def is_cancel(self):
         return self._basic_judge([pyxel.KEY_G,pyxel.KEY_KP_2,pyxel.GAMEPAD1_BUTTON_B])
     
-    def is_left(self):
-        return self._basic_judge([pyxel.KEY_LEFT, pyxel.KEY_A, pyxel.GAMEPAD1_BUTTON_DPAD_LEFT])
+    def is_left(self, pressing: bool = False):
+        return self._basic_judge([pyxel.KEY_LEFT, pyxel.KEY_A, pyxel.GAMEPAD1_BUTTON_DPAD_LEFT],pressing)
     
-    def is_right(self):
-        return self._basic_judge([pyxel.KEY_RIGHT, pyxel.KEY_D, pyxel.GAMEPAD1_BUTTON_DPAD_RIGHT])
+    def release_left(self):
+        keys = [pyxel.KEY_LEFT, pyxel.KEY_A, pyxel.GAMEPAD1_BUTTON_DPAD_LEFT]
+        ishit = False
+        for k in keys:
+            if pyxel.btnr(k):
+                ishit = True
+                break
+        return ishit
     
-    def is_up(self):
-        return self._basic_judge([pyxel.KEY_UP, pyxel.KEY_W, pyxel.GAMEPAD1_BUTTON_DPAD_UP])
+    def is_right(self, pressing: bool = False):
+        return self._basic_judge([pyxel.KEY_RIGHT, pyxel.KEY_D, pyxel.GAMEPAD1_BUTTON_DPAD_RIGHT],pressing)
     
-    def is_down(self):
-        return self._basic_judge([pyxel.KEY_DOWN, pyxel.KEY_S, pyxel.GAMEPAD1_BUTTON_DPAD_DOWN])
+    def release_right(self):
+        keys = [pyxel.KEY_RIGHT, pyxel.KEY_D, pyxel.GAMEPAD1_BUTTON_DPAD_RIGHT]
+        ishit = False
+        for k in keys:
+            if pyxel.btnr(k):
+                ishit = True
+                break
+        return ishit
+        
+    def is_up(self, pressing: bool = False):
+        return self._basic_judge([pyxel.KEY_UP, pyxel.KEY_W, pyxel.GAMEPAD1_BUTTON_DPAD_UP],pressing)
+    
+    def is_down(self, pressing: bool = False):
+        return self._basic_judge([pyxel.KEY_DOWN, pyxel.KEY_S, pyxel.GAMEPAD1_BUTTON_DPAD_DOWN],pressing)
 
     def is_mainaction(self, pressing: bool = False):
         keys = [
@@ -320,6 +395,10 @@ class KeyManager:
     
     def is_fourthaction(self, pressing: bool = False):
         keys = [pyxel.KEY_T, pyxel.KEY_KP_5, pyxel.GAMEPAD1_BUTTON_Y]
+        return self._basic_judge(keys,pressing)
+
+    def is_dashaction(self, pressing: bool = False):
+        keys = [pyxel.KEY_SHIFT, pyxel.GAMEPAD1_BUTTON_LEFTSHOULDER]
         return self._basic_judge(keys,pressing)
 
     def is_startpose(self, pressing: bool = False):
@@ -600,9 +679,9 @@ class AttackCommand:
             self.dir.x = 1
             self.effectable = [True,  False, False, False, False, False, False, False, False]
             
-            self.area.front = True
-            self.area.front_left = True
-            self.area.front_right = True
+            self.area.front = False
+            self.area.front_left = False
+            self.area.front_right = False
             self.area.back = True
             self.area.back_left = True
             self.area.back_right =True
@@ -1175,6 +1254,7 @@ class Item(GameObject):
     TYPE_RADER_2 = 5
     TYPE_SHIELD = 6
     TYPE_LEVELUP = 7
+    TYPE_GOLDBOX = 8
     def __init__(self, app, dtype, x, y):
         super().__init__(app, x, y)
         self.type = dtype
@@ -1205,6 +1285,9 @@ class Item(GameObject):
             
         elif dtype == Item.TYPE_LEVELUP:
             self.img_bnd = Bounds(IBNK.get("ginger_fishcakes"))
+        
+        elif dtype == Item.TYPE_GOLDBOX:
+            self.img_bnd = Bounds(IBNK.get("goldbox"))
             
     def effect(self, target):
         if self.type == Item.TYPE_HPFULL:

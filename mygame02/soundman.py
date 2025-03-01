@@ -28,10 +28,21 @@ class SoundManager:
         self.depthcharge = 20
         self.pause = 23
         self.levelup = 24
+        self.debuff = 29
         
     def stop_music(self):
         pyxel.stop(0)
         pyxel.stop(1)
+    
+    def play_title(self):
+        if not self.use_bgm:
+            return
+        pyxel.playm(4, loop=True)
+    
+    def play_history(self):
+        if not self.use_bgm:
+            return
+        pyxel.playm(5, loop=True)
     
     def play_shoot(self,cmdtype:int):
         if not self.use_se:
@@ -93,6 +104,11 @@ class SoundManager:
         if not self.use_se:
             return
         pyxel.play(2, self.levelup)
+    
+    def play_debuff(self):
+        if not self.use_se:
+            return
+        pyxel.play(2, self.debuff)
     
     def play_modeselect(self):
         if not self.use_bgm:

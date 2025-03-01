@@ -1,4 +1,5 @@
 import pyxel
+import datetime
 from typing import NamedTuple
 from soundman import SoundManager
 from appconst import CSV_ENEMY_APPEAR_RATE
@@ -26,15 +27,17 @@ class GameOperator:
         self.config = {
             "use_bgm" : False,
             "use_se" : True,
-            "locale" : LOCALE_EN
+            "locale" : LOCALE_EN,
+            "save_score" : True
         }
         #---not savbale, temporary settings and status
         self.states = GameState()
-        self.current_scene = "start"
+        self.current_scene = "start"        
         
         self.data_man = DataManager()
         self.load()
         self.setup_config()
+        self.sound.play_title()
         
     def load(self):
         if self.data_man.load():
@@ -67,6 +70,7 @@ class GameOperator:
     def setup_start(self):
         self.parent.scenes["start"].change_locale()
         self.sound.stop_music()
+        self.sound.play_title()
         
     def setup_option(self):
         self.parent.scenes["option"].setup_config()
@@ -77,6 +81,7 @@ class GameOperator:
     def setup_mainstage(self, selectchara, equiptype: int = 0):
         self.parent.scenes["mainstage"].reset_game(self.states.current_gamemode)
         self.parent.scenes["mainstage"].setup_player(selectchara, equiptype)
+        self.states.current_date = datetime.datetime.now().strftime("%Y/%m/%d %H:%M")
         self.sound.stop_music()
         self.sound.play_mainstage()
 
@@ -88,6 +93,11 @@ class GameOperator:
     def setup_gamemode(self):
         self.parent.scenes["gamemode"].change_locale()
         self.sound.play_modeselect()
+        
+    def setup_start(self):
+        self.parent.scenes["start"].change_locale()
+        self.sound.stop_music()
+        self.sound.play_title()
         
     def setup_timeattack_rule(self):
         self.parent.scenes["timeattack"].reset_select()
@@ -101,6 +111,24 @@ class GameOperator:
         self.parent.scenes["survival"].change_locale()
         self.sound.stop_music()
         self.sound.play_modeselect()
+        
+    def setup_resultmode(self):
+        self.parent.scenes["resultmode"].change_locale()
+        #self.sound.play_modeselect()
+    
+    def setup_timeattack_result(self):
+        self.parent.scenes["resulttimeattack"].reset_select()
+        self.parent.scenes["resulttimeattack"].change_locale()
+        self.parent.scenes["resulttimeattack"].setup_listdata()
+        self.sound.stop_music()
+        self.sound.play_history()
+        
+    def setup_survival_result(self):
+        self.parent.scenes["resultsurvival"].reset_select()
+        self.parent.scenes["resultsurvival"].change_locale()
+        self.parent.scenes["resultsurvival"].setup_listdata()
+        self.sound.stop_music()
+        self.sound.play_history()
 
 class GameConfig:
     def __init__(self):
@@ -110,12 +138,14 @@ class GameConfig:
         self.use_bgm = False
         self.use_se = True
         self.locale = LOCALE_EN
+        self.save_score = True
     
     def to_raw(self):
         return {
             "use_bgm" : self.use_bgm,
             "use_se" : self.use_se,
-            "locale" : self.locale
+            "locale" : self.locale,
+            "save_score" : self.save_score
         }
 
 class GameState:
@@ -124,6 +154,8 @@ class GameState:
     
     def reset_states(self):
         self.current_gamemode = 0
+        self.current_player = ""
+        self.current_date = None
         self.godmode = True
         self.appear_damecon = [1, 10]
         self.appear_juice = [1, 30]
@@ -133,6 +165,7 @@ class GameState:
         self.appear_rader2 = [1, 10]
         self.appear_shield1 = [1, 30]
         self.appear_cat = [1, 5]
+        self.appear_goldbox = [1,3]
         self.timeattack_appear_interval = 40
         self.timeattack_time = 0
         self.timeattack_enemies = 0

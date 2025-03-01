@@ -31,7 +31,7 @@
                 },
                 "move_interval" : 2,
                 "movespeed" : 1,
-                "point" : 1,
+                "point" : 2,
                 "move_additional" : {
                     "area" : {
                         "front" : false,
@@ -57,7 +57,7 @@
                 },
                 "move_interval" : 1,
                 "movespeed" : 1,
-                "point" : 1,
+                "point" : 3,
                 "move_additional" : {
                     "area" : {
                         "front" : true,
@@ -133,7 +133,7 @@
                 },
                 "move_interval" : 1,
                 "movespeed" : 2,
-                "point" : 2,
+                "point" : 3,
                 "move_additional" : {
                     "area" : {
                         "front" : false,
@@ -188,7 +188,7 @@
                 },
                 "move_interval" : 1,
                 "movespeed" : 2,
-                "point" : 2,
+                "point" : 4,
                 "move_additional" : {
                     "area" : {
                         "front" : false,

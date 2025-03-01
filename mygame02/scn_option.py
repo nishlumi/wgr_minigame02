@@ -19,6 +19,16 @@ class OptionScene(GameScene):
         
         self.setup_config()
     
+    def change_locale(self):
+        targets = [
+            "txt_savescore",
+        ]
+        for t in targets:
+            if self.ui[t].type == GameUI.TYPE_TEXT:
+                self.ui[t].set_text(self.parent.t(t))
+            elif self.ui[t].type == GameUI.TYPE_CHECKBOX:
+                self.ui[t].text.set_text(self.parent.t(t))
+        
     def setup_ui(self):
         retimg = self.parent.imgbnk.get("larrow")
         self.ui = {
@@ -30,6 +40,7 @@ class OptionScene(GameScene):
             "locale_en": GUICheckbox("English", pos(8), pos(6)+4,font=self.parent.jp_fontmisaki,color1=pyxel.COLOR_WHITE),
             #"txt_mode": GUIText("Mode:",pos(1), pos(5),color1=pyxel.COLOR_WHITE),
             "testmode": GUICheckbox("Test mode", pos(1), pos(8),False,font=self.parent.jp_fontmisaki,color1=pyxel.COLOR_WHITE),
+            "txt_savescore": GUICheckbox(self.parent.t("txt_savescore"), pos(1), pos(9)+4,True,font=self.parent.jp_fontmisaki,color1=pyxel.COLOR_WHITE),
             
         }
         super().setup_ui()
@@ -56,10 +67,15 @@ class OptionScene(GameScene):
         self.ui["locale_ja"].set_round(
             upui=self.ui["bgm"],
             rightui=self.ui["locale_en"],
+            bottomui="txt_savescore"
         )
         self.ui["locale_en"].set_round(
             upui=self.ui["se"],
             leftui=self.ui["locale_ja"],
+            bottomui="txt_savescore"
+        )
+        self.ui["txt_savescore"].set_round(
+            upui="locale_ja"
         )
         
         
@@ -74,6 +90,7 @@ class OptionScene(GameScene):
             self.ui["locale_en"].checked = True
         
         self.ui["testmode"].checked = self.parent.is_test
+        self.ui["txt_savescore"].checked = self.parent.config["save_score"]
         
     def check_and_config(self):
         if self.select == "return":
@@ -99,15 +116,21 @@ class OptionScene(GameScene):
             self.parent.config["locale"] = LOCALE_JA
             self.ui["locale_ja"].checked = True
             self.ui["locale_en"].checked = False
+            self.change_locale()
             
         elif self.select  == "locale_en":
             self.parent.config["locale"] = LOCALE_EN
             self.ui["locale_ja"].checked = False
             self.ui["locale_en"].checked = True
+            self.change_locale()
         
         elif self.select == "testmode":
             self.parent.is_test = not self.parent.is_test
             self.ui["testmode"].checked = self.parent.is_test
+            
+        elif self.select == "txt_savescore":
+            self.parent.config["save_score"] = not self.parent.config["save_score"]
+            self.ui["txt_savescore"].checked = self.parent.config["save_score"]
         
     def update(self):
         if pyxel.btnp(pyxel.MOUSE_BUTTON_LEFT):
@@ -117,29 +140,11 @@ class OptionScene(GameScene):
                 self.parent.current_scene = "start"
                 self.parent.setup_start()
         
-            #---use bgm
-            """if self.ui["bgm"].check_touch_area(pyxel.mouse_x, pyxel.mouse_y):
-                self.parent.config["use_bgm"] = not self.parent.config["use_bgm"]
-                self.parent.sound.use_bgm = self.parent.config["use_bgm"]
-                self.ui["bgm"].checked = self.parent.config["use_bgm"]
+        if self.keyman.is_cancel():
+            self.parent.save()
+            self.parent.current_scene = "start"
+            self.parent.setup_start()
             
-            #---use se
-            if self.ui["se"].check_touch_area(pyxel.mouse_x, pyxel.mouse_y):
-                self.parent.config["use_se"] = not self.parent.config["use_se"]
-                self.parent.sound.use_se = self.parent.config["use_se"]
-                self.ui["se"].checked = self.parent.config["use_se"]
-                print("flag=", self.parent.sound.use_se)
-            
-            #---locale
-            if self.ui["locale_ja"].check_touch_area(pyxel.mouse_x, pyxel.mouse_y):
-                self.parent.config["locale"] = LOCALE_JA
-                self.ui["locale_ja"].checked = True
-                self.ui["locale_en"].checked = False
-                
-            if self.ui["locale_en"].check_touch_area(pyxel.mouse_x, pyxel.mouse_y):
-                self.parent.config["locale"] = LOCALE_EN
-                self.ui["locale_ja"].checked = False
-                self.ui["locale_en"].checked = True"""
         
         keystr = ""
         if self.keyman.is_up():
@@ -196,13 +201,3 @@ class OptionScene(GameScene):
         
         draw_select_cursor(self.cursor, 8, 8, -2, -2)
         
-        #---help
-        """pyxel.text(pos(1), pos(12), "---Help---",pyxel.COLOR_WHITE)
-        pyxel.text(pos(1), pos(13), "<-: A-key, Left-key",pyxel.COLOR_WHITE)
-        pyxel.text(pos(1), pos(14), "->: D-key, Right-key",pyxel.COLOR_WHITE)
-        pyxel.text(pos(1), pos(15), "Shot: SPACE, Mouse left,",pyxel.COLOR_WHITE)
-        pyxel.text(pos(5), pos(16), "Gamepad A-button",pyxel.COLOR_WHITE)
-        pyxel.text(pos(1), pos(17), "Boost:  Shift-key",pyxel.COLOR_WHITE)        
-        pyxel.text(pos(5), pos(18), "Gamepad B-button",pyxel.COLOR_WHITE)
-        pyxel.blt(pos(2),  pos(18), IMGPLT_1, 0, 32, 16, 16, pyxel.COLOR_BLACK)
-        pyxel.text(pos(5), pos(19), "- button",pyxel.COLOR_WHITE)"""

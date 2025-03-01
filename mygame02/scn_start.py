@@ -28,6 +28,8 @@ class StartScene(GameScene):
         
         self.uikeys = list(self.ui.keys())
         self.lenui = len(self.uikeys)
+        
+        
 
     def setup_ui(self):
         self.ui = {
@@ -36,6 +38,7 @@ class StartScene(GameScene):
             "title1": GUIText("Warship Shooting R",pos(1),pos(5),self.parent.jp_font12,pyxel.COLOR_RED,pyxel.COLOR_BLACK, 1, 0),
             "mnstart": GUIText(self.parent.t("start"),pos(2),pos(15),self.parent.jp_fontmisaki,pyxel.COLOR_WHITE,pyxel.COLOR_BLACK, 0, 0),
             "mnoption": GUIText(self.parent.t("option"),pos(9),pos(15),self.parent.jp_fontmisaki,pyxel.COLOR_WHITE,pyxel.COLOR_BLACK, 0, 0),
+            #"mnresult": GUIText(self.parent.t("result"),pos(2),pos(17),self.parent.jp_fontmisaki,pyxel.COLOR_WHITE,pyxel.COLOR_BLACK, 0, 0),
             "mnhelp": GUIText(self.parent.t("help"),pos(9),pos(17),self.parent.jp_fontmisaki,pyxel.COLOR_WHITE,pyxel.COLOR_BLACK, 0, 0),
             "author": GUIText(f"@{self.parent.meta.author}",pos(10), pos(19),self.parent.jp_fontmisaki,color1=pyxel.COLOR_RED)
         }
@@ -46,16 +49,21 @@ class StartScene(GameScene):
         self.ui["mnhelp"].set_size(pos(6), pos(1))
         self.ui["mnstart"].selectable = True
         self.ui["mnoption"].selectable = True
+        #self.ui["mnresult"].selectable = True
         self.ui["mnhelp"].selectable = True
         
         self.ui["mnstart"].set_round(
             rightui=self.ui["mnoption"],
-            bottomui=None
+            bottomui=self.ui["mnhelp"]
         )
         self.ui["mnoption"].set_round(
             leftui=self.ui["mnstart"],
             bottomui=self.ui["mnhelp"]
         )
+        #self.ui["mnresult"].set_round(
+        #    upui=self.ui["mnstart"],
+        #    rightui=self.ui["mnhelp"]
+        #)
         self.ui["mnhelp"].set_round(
             upui=self.ui["mnoption"],
             leftui=self.ui["mnstart"],
@@ -80,6 +88,9 @@ class StartScene(GameScene):
         elif self.select == "mnoption":
             self.parent.current_scene = "option"
             self.parent.setup_option()
+        #elif self.select == "mnresult":
+        #    self.parent.current_scene = "resultmode"
+        #    self.parent.setup_gamemode()
         elif self.select == "mnhelp":
             self.parent.current_scene = "help"
             self.parent.setup_help()
@@ -88,20 +99,7 @@ class StartScene(GameScene):
     def update(self):
         #---to play
         if pyxel.btnp(pyxel.MOUSE_BUTTON_LEFT):
-            """if self.ui["mnstart"].check_touch_area(pyxel.mouse_x, pyxel.mouse_y):
-                self.parent.current_scene = "gamemode"
-                self.parent.setup_gamemode()
-                
-        
-            #---to option
-            if self.ui["mnoption"].check_touch_area(pyxel.mouse_x, pyxel.mouse_y):
-                self.parent.current_scene = "option"
-                self.parent.setup_option()
             
-            #---to help
-            if self.ui["mnhelp"].check_touch_area(pyxel.mouse_x, pyxel.mouse_y):
-                self.parent.current_scene = "help"
-                self.parent.setup_help()"""
                 
             #---to test
         
@@ -132,31 +130,7 @@ class StartScene(GameScene):
         elif self.keyman.is_right():
             keystr = "right"
         
-        """for i in range(0, self.lenui):
-            ui = self.ui[self.uikeys[i]]
-            #---ui cursor operation
-            if ui.check_touch_area(self.cursor.x, self.cursor.y):
-                self.select = self.uikeys[i]
-                if keystr != "" and ui.roundui[keystr]:
-                    if ui.roundui[keystr].type == GameUI.TYPE_CHECKBOX:
-                        self.cursor.x = ui.roundui[keystr].check_bounds.x
-                        self.cursor.y = ui.roundui[keystr].check_bounds.y
-                    else:
-                        self.cursor.x = ui.roundui[keystr].bounds.x
-                        self.cursor.y = ui.roundui[keystr].bounds.y
-                    self.select = ui.roundui[keystr].name
-                    break
-            #---mouse, touch operation
-            if ui.check_touch_area(pyxel.mouse_x, pyxel.mouse_y) and pyxel.btnp(pyxel.MOUSE_BUTTON_LEFT):
-                self.select = self.uikeys[i]
-                if ui.type == GameUI.TYPE_CHECKBOX:
-                    self.cursor.x = ui.check_bounds.x
-                    self.cursor.y = ui.check_bounds.y
-                else:
-                    self.cursor.x = ui.bounds.x
-                    self.cursor.y = ui.bounds.y
-                self.check_and_config()
-                break"""
+        
         uoc = self.ui_operation_check(keystr)
         if uoc["mouse"]:
             self.check_and_config()

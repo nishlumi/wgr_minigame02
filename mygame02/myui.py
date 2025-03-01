@@ -1,5 +1,7 @@
+import pyxel.cli
 from mycls import Vector2, Bounds, pos
 from appconst import IMGPLT_1, IMG_CONFIG_CHECK_X, IMG_CONFIG_CHECK_Y, IMG_CONFIG_UNCHECK_X
+from imgbnk import BankImageElement
 import pyxel
 import re
 
@@ -25,7 +27,7 @@ class TextWrapper:
 
     def split_text(self, text):
         # 英単語、日本語文字、句読点などを分割
-        pattern = r'([ぁ-んァ-ン一-龥ーｰ～－、。！？]|[a-zA-Z0-9]+|[\/,.!?@<>\-]|\s+)'
+        pattern = r'([ぁ-んァ-ン一-龥ーｰ～－、。；：！？（）「」]|[０１２３４５６７８９]|[ａｂｃｄｅｆｇｈｉｊｋｌｍｎｏｐｑｒｓｔｕｖｗｘｙｚＡＢＣＤＥＦＧＨＩＪＫＬＭＮＯＰＱＲＳＴＵＶＷＸＹＺ]|[a-zA-Z0-9]+|[\/,.:;!?@<>\-]|\s+)'
         return [x for x in re.findall(pattern, text) if x]
 
     def wrap_text(self, text, max_width):
@@ -93,6 +95,8 @@ class GameUI:
     TYPE_RECT = 3
     TYPE_BUTTON = 4
     TYPE_DIALOG = 5
+    TYPE_SCROLLAREA = 6
+    TYPE_RESULTCARD = 7
     def __init__(self, uitype: int, xywh: Bounds):
         self.name = ""
         self.bounds: Bounds = xywh  #Bounds(0, 0, 0, 0)
@@ -108,10 +112,20 @@ class GameUI:
         }
         self.referlist: dict = {}
         self.selectable = False
+        self.enabled = True
+        self.parent = None
     
     def get_object(self, name):
         if name in self.referlist:
             return self.referlist[name]
+        else:
+            for r in self.referlist:
+                if self.referlist[r].type == GameUI.TYPE_SCROLLAREA:
+                    if name in self.referlist[r].contents:
+                        return self.referlist[r].contents[name]
+                elif self.referlist[r].type == GameUI.TYPE_RESULTCARD:
+                    if name in self.referlist[r].contents:
+                        return self.referlist[r].contents[name]
         return None
     
     def set_round(self, upui = None, leftui = None, rightui = None, bottomui = None):
@@ -291,13 +305,13 @@ class GUIRect(GameUI):
         return super().draw()
 
 class GUIButton(GameUI):
-    def __init__(self, label, x, y, w, h, font: pyxel.Font = None):
+    def __init__(self, label, x, y, w, h, font: pyxel.Font = None, bgcolor = pyxel.COLOR_WHITE, fontcolor = pyxel.COLOR_BLACK):
         super().__init__(GameUI.TYPE_BUTTON, Bounds(x, y, w, h))
         self.set_text(label)
         self.pressed = False
-        self.bgcolor = pyxel.COLOR_WHITE
-        self.fontcolor = pyxel.COLOR_BLACK
-        self.font = font
+        self.bgcolor = bgcolor
+        self.fontcolor = fontcolor
+        self.font = font        
     
     def set_text(self, text):
         self.label = text
@@ -306,12 +320,15 @@ class GUIButton(GameUI):
         self.labelposx = self.bounds.x + ((self.bounds.w - self.labellen * 4) / 2) 
     
     def update(self):
-        if (
-            (self.bounds.x <= pyxel.mouse_x <= (self.bounds.x + self.bounds.w))
-            and
-            (self.bounds.y <= pyxel.mouse_y <= (self.bounds.y + self.bounds.h))
-        ):
-            self.pressed = pyxel.btnp(pyxel.MOUSE_BUTTON_LEFT)
+        if self.enabled:
+            if (
+                (self.bounds.x <= pyxel.mouse_x <= (self.bounds.x + self.bounds.w))
+                and
+                (self.bounds.y <= pyxel.mouse_y <= (self.bounds.y + self.bounds.h))
+            ):
+                self.pressed = pyxel.btnp(pyxel.MOUSE_BUTTON_LEFT)
+        else:
+            self.pressed = False
         
         return super().update()
     
@@ -416,4 +433,156 @@ class GUIPauseButton(GUIButton):
         return super().update()
     
     def draw(self):
+        return super().draw()
+
+class GUIScrollArea(GameUI):
+    def __init__(self, x, y, w, h, contents = {}):
+        super().__init__(GameUI.TYPE_SCROLLAREA, Bounds(x, y, w, h))
+        self.contents: dict[str, GameUI] = contents
+        self.calculate_pos()
+        self.first_content = None
+        self.last_content = None
+    
+    def calculate_pos(self):
+        #for c in self.contents:
+        #    con = self.contents[c]
+        #    con.bounds.x = self.bounds.x + con.bounds.x
+        #    con.bounds.y = self.bounds.y + con.bounds.y
+        
+        #print(self.contents.keys())
+        if len(self.contents.keys()) > 0:
+            con_sorted = sorted(self.contents.items(), key= lambda x: x[1].bounds.y)
+            #print(con_sorted)
+            self.first_content = con_sorted[0][1]
+            self.last_content = con_sorted[len(con_sorted)-1][1]
+            print("first=",self.first_content.name)
+            print("last=",self.last_content.name)
+    
+    def append(self, name: str, content: GameUI):
+        content.bounds.x = self.bounds.x + content.bounds.x
+        content.bounds.y = self.bounds.y + content.bounds.y
+        print("cont y=", content.bounds.y)
+        if content.type == GameUI.TYPE_RESULTCARD:
+            for c in content.contents:
+                content.contents[c].bounds.y += self.bounds.y
+                content.contents[c].bounds.x += self.bounds.x
+        elif content.type == GameUI.TYPE_SCROLLAREA:
+            for c in content.contents:
+                c.bounds.y += self.bounds.y
+                c.bounds.x += self.bounds.x
+            
+        if (
+            (self.bounds.x <= content.bounds.x < content.bounds.x+content.bounds.w <= self.bounds.x+self.bounds.w)
+            and
+            (self.bounds.y <= content.bounds.y < content.bounds.y+content.bounds.h <= self.bounds.y+self.bounds.h)
+        ):
+            content.enabled = True
+        else:
+            content.enabled = False
+        content.name = name
+        content.parent = self
+        self.contents[name] = content
+        
+    def scroll_y(self, y):
+        #lstinx = len(self.contents)-1
+        if (y < 0) and (self.last_content.bounds.y+self.last_content.bounds.h < self.bounds.y+self.bounds.h):
+            print("last!")
+            return
+        if (y > 0) and (self.first_content.bounds.y >= self.bounds.y):
+            print("first!")
+            return
+        
+        for c in self.contents:
+            con = self.contents[c]
+            con.bounds.y += y
+            if con.type == GameUI.TYPE_RESULTCARD:
+                con.scroll_y(y)
+            elif con.type == GameUI.TYPE_SCROLLAREA:
+                con.scroll_y(y)
+    
+
+        
+    def update(self):
+        for c in self.contents:
+            con = self.contents[c]
+            if (
+                (self.bounds.x <= con.bounds.x < con.bounds.x+con.bounds.w <= self.bounds.x+self.bounds.w)
+                and
+                (self.bounds.y <= con.bounds.y < con.bounds.y+con.bounds.h <= self.bounds.y+self.bounds.h)
+            ):
+                con.enabled = True
+            else:
+                con.enabled = False
+            con.update()
+        return super().update()
+    
+    def draw(self):
+        pyxel.clip(self.bounds.x, self.bounds.y, self.bounds.w, self.bounds.h)
+        for c in self.contents:
+            con = self.contents[c]
+            con.draw()
+        pyxel.clip()
+        return super().draw()
+    
+class GUIResultCard(GameUI):
+    def __init__(self, x, y, w, h, img: BankImageElement, fontcol = pyxel.COLOR_BLACK, bgcol = pyxel.COLOR_GRAY, font1 = None, font2 = None):
+        super().__init__(GameUI.TYPE_RESULTCARD, Bounds(x, y, w, h))
+        self.selectable = True
+        self.bgcolor = bgcol
+        self.fontcolor = fontcol
+        print("card y ", y)
+        self.contents = {
+            "image" : GUIImage(x+2, y+3, img.page, Bounds(img), pyxel.COLOR_BLACK),
+            "name" : GUIText("CL Atlanta", x+pos(3), y+2, font=font1, color1=self.fontcolor),
+            "cond1" : GUIText("Forces: CV,BC,BB", x+pos(3), y+pos(2), font=font2, color1=self.fontcolor),
+            "cond2" : GUIText("Point: 29123", x+pos(3), y+pos(3)+4, font=font2, color1=self.fontcolor),
+            "cond3" : GUIText("", x+pos(11), y+pos(2)+4, font=font2, color1=self.fontcolor),
+            "cond4" : GUIText("", x+pos(11), y+pos(3)+4, font=font2, color1=self.fontcolor),
+            "rank" : GUIText("S", x+pos(14), y+pos(1)+4,font=font1,color1=pyxel.COLOR_RED, color2=pyxel.COLOR_WHITE, shifted_x=1)
+        }
+    
+    def set_image(self, img: BankImageElement):
+        self.contents["image"].img_bnd.page = img.page
+        self.contents["image"].img_bnd.x = img.x
+        self.contents["image"].img_bnd.y = img.y
+        self.contents["image"].img_bnd.w = img.w
+        self.contents["image"].img_bnd.h = img.h
+    
+    def set_playername(self, name):
+        self.contents["name"].set_text(name)
+    
+    def set_condition(self, index: int, cond):
+        if index == 1:
+            self.contents["cond1"].set_text(cond)
+        elif index == 2:
+            self.contents["cond2"].set_text(cond)
+        elif index == 3:
+            self.contents["cond3"].set_text(cond)
+        elif index == 4:
+            self.contents["cond4"].set_text(cond)
+    
+    def set_rank(self, rank: str):
+        self.contents["rank"].set_text(rank)
+        
+    def scroll_y(self, y):
+        for c in self.contents:
+            con = self.contents[c]
+            con.bounds.y += y
+        
+    def update(self):
+        for c in self.contents:
+            con = self.contents[c]
+            con.update()
+        return super().update()
+
+    def draw(self):
+        #pyxel.clip(self.bounds.x, self.bounds.y, self.bounds.w, self.bounds.h)
+        pyxel.rect(self.bounds.x, self.bounds.y, self.bounds.w, self.bounds.h, self.bgcolor)
+        pyxel.rect(self.contents["image"].bounds.x, self.contents["image"].bounds.y, self.contents["image"].img_bnd.w+2, self.contents["image"].img_bnd.h+2, pyxel.COLOR_WHITE)
+        pyxel.rect(self.contents["image"].bounds.x-1, self.contents["image"].bounds.y-1, self.contents["image"].img_bnd.w+2, self.contents["image"].img_bnd.h+2, pyxel.COLOR_BLACK)
+        #pyxel.rectb(self.contents["image"].bounds.x-1, self.contents["image"].bounds.y-1, self.contents["image"].img_bnd.w+2, self.contents["image"].img_bnd.h+2, pyxel.COLOR_WHITE)
+        for c in self.contents:
+            con = self.contents[c]
+            con.draw()
+        #pyxel.clip()
         return super().draw()

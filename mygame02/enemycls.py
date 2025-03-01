@@ -508,8 +508,6 @@ class Enemy(GameObject):
                 ishit["blast"] = calc_collision(selfleft, selfright, selftop, selfbottom, 
                               newpos.x, newpos.x+shot.img_bnd.w, newpos.y, newpos.y+shot.img_bnd.h
                 )
-                if ishit["blast"]:
-                    print("front hit!")
             
             if not ishit["blast"] and shot.area.back:
                 newpos.x = shot.x
@@ -518,8 +516,6 @@ class Enemy(GameObject):
                 ishit["blast"] = calc_collision(selfleft, selfright, selftop, selfbottom, 
                               newpos.x, newpos.x+shot.img_bnd.w, newpos.y, newpos.y+shot.img_bnd.h
                 )
-                if ishit["blast"]:
-                    print("back hit!")
         
             if shot.dir.y == -1:
                 if not ishit["blast"] and shot.area.front_left:
@@ -529,8 +525,6 @@ class Enemy(GameObject):
                     ishit["blast"] = calc_collision(selfleft, selfright, selftop, selfbottom, 
                               newpos.x, newpos.x+shot.img_bnd.w, newpos.y, newpos.y+shot.img_bnd.h
                     )
-                    if ishit["blast"]:
-                        print("front left hit!")
                 if not ishit["blast"] and shot.area.front_right:
                     newpos.x = shot.x + shot.img_bnd.w
                     newpos.y = shot.y + shot.img_bnd.h * shot.dir.y
@@ -538,8 +532,6 @@ class Enemy(GameObject):
                     ishit["blast"] = calc_collision(selfleft, selfright, selftop, selfbottom, 
                               newpos.x, newpos.x+shot.img_bnd.w, newpos.y, newpos.y+shot.img_bnd.h
                     )
-                    if ishit["blast"]:
-                        print("front right hit!")
                 
                 if not ishit["blast"] and shot.area.back_left:
                     newpos.x = shot.x + (shot.img_bnd.w * -1)
@@ -548,8 +540,6 @@ class Enemy(GameObject):
                     ishit["blast"] = calc_collision(selfleft, selfright, selftop, selfbottom, 
                               newpos.x, newpos.x+shot.img_bnd.w, newpos.y, newpos.y+shot.img_bnd.h
                     )
-                    if ishit["blast"]:
-                        print("back left hit!")
                 if not ishit["blast"] and shot.area.back_right:
                     newpos.x = shot.x + shot.img_bnd.w
                     newpos.y = shot.y +  shot.img_bnd.h * shot.dir.y * shot.dir.y
@@ -557,8 +547,6 @@ class Enemy(GameObject):
                     ishit["blast"] = calc_collision(selfleft, selfright, selftop, selfbottom, 
                               newpos.x, newpos.x+shot.img_bnd.w, newpos.y, newpos.y+shot.img_bnd.h
                     )
-                    if ishit["blast"]:
-                        print("back right hit!")
                 
                 if not ishit["blast"] and shot.area.left:
                     newpos.x = shot.x + (shot.img_bnd.w * -1)
@@ -567,8 +555,6 @@ class Enemy(GameObject):
                     ishit["blast"] = calc_collision(selfleft, selfright, selftop, selfbottom, 
                               newpos.x, newpos.x+shot.img_bnd.w, newpos.y, newpos.y+shot.img_bnd.h
                     )
-                    if ishit["blast"]:
-                        print("left hit!")
                 if not ishit["blast"] and shot.area.right:
                     newpos.x = shot.x + shot.img_bnd.w
                     newpos.y = shot.y
@@ -576,8 +562,6 @@ class Enemy(GameObject):
                     ishit["blast"] = calc_collision(selfleft, selfright, selftop, selfbottom, 
                               newpos.x, newpos.x+shot.img_bnd.w, newpos.y, newpos.y+shot.img_bnd.h
                     )
-                    if ishit["blast"]:
-                        print("right hit!")
             elif shot.dir.y == 1:
                 if not ishit["blast"] and shot.area.front_left:
                     newpos.x = shot.x +  shot.img_bnd.w
@@ -586,8 +570,6 @@ class Enemy(GameObject):
                     ishit["blast"] = calc_collision(selfleft, selfright, selftop, selfbottom, 
                               newpos.x, newpos.x+shot.img_bnd.w, newpos.y, newpos.y+shot.img_bnd.h
                     )
-                    if ishit["blast"]:
-                        print("front left hit!")
                 if not ishit["blast"] and shot.area.front_right:
                     newpos.x = shot.x + (shot.img_bnd.w * -1)
                     newpos.y = shot.y + shot.img_bnd.h * shot.dir.y
@@ -595,8 +577,6 @@ class Enemy(GameObject):
                     ishit["blast"] = calc_collision(selfleft, selfright, selftop, selfbottom, 
                               newpos.x, newpos.x+shot.img_bnd.w, newpos.y, newpos.y+shot.img_bnd.h
                     )
-                    if ishit["blast"]:
-                        print("front right hit!")
                 
                 if not ishit["blast"] and shot.area.back_left:
                     newpos.x = shot.x +  shot.img_bnd.w
@@ -605,8 +585,6 @@ class Enemy(GameObject):
                     ishit["blast"] = calc_collision(selfleft, selfright, selftop, selfbottom, 
                               newpos.x, newpos.x+shot.img_bnd.w, newpos.y, newpos.y+shot.img_bnd.h
                     )
-                    if ishit["blast"]:
-                        print("back left hit!")
                 if not ishit["blast"] and shot.area.back_right:
                     newpos.x = shot.x + (shot.img_bnd.w * -1)
                     newpos.y = shot.y +  shot.img_bnd.h * shot.dir.y * shot.dir.y
@@ -614,8 +592,6 @@ class Enemy(GameObject):
                     ishit["blast"] = calc_collision(selfleft, selfright, selftop, selfbottom, 
                               newpos.x, newpos.x+shot.img_bnd.w, newpos.y, newpos.y+shot.img_bnd.h
                     )
-                    if ishit["blast"]:
-                        print("back right hit!")
                 
                 if not ishit["blast"] and shot.area.left:
                     newpos.x = shot.x +  shot.img_bnd.w
@@ -624,8 +600,6 @@ class Enemy(GameObject):
                     ishit["blast"] = calc_collision(selfleft, selfright, selftop, selfbottom, 
                               newpos.x, newpos.x+shot.img_bnd.w, newpos.y, newpos.y+shot.img_bnd.h
                     )
-                    if ishit["blast"]:
-                        print("left hit!")
                 if not ishit["blast"] and shot.area.right:
                     newpos.x = shot.x + (shot.img_bnd.w * -1)
                     newpos.y = shot.y
@@ -633,8 +607,6 @@ class Enemy(GameObject):
                     ishit["blast"] = calc_collision(selfleft, selfright, selftop, selfbottom, 
                               newpos.x, newpos.x+shot.img_bnd.w, newpos.y, newpos.y+shot.img_bnd.h
                     )
-                    if ishit["blast"]:
-                        print("right hit!")
         
         return ishit
     

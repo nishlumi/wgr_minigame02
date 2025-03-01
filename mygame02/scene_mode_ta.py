@@ -14,7 +14,7 @@ class SceneModeTimeAttack(GameScene):
     def __init__(self, app: GameOperator):
         super().__init__(app)
         self.cursor = Bounds(pos(1), pos(4), 8, 8)
-        self.select = ""
+        self.select = "chk_enemy_all"
         self.rule_select = {
             "time" : TimeAttackRule.TYPE_TIME_SHORT,
             "forces" : TimeAttackRule.TYPE_FORCES_ALL,
@@ -27,8 +27,8 @@ class SceneModeTimeAttack(GameScene):
         self.lenui = len(self.uikeys)
         
     def reset_select(self):
-        self.cursor.x = self.ui["chk_time_short"].bounds.x
-        self.cursor.y = self.ui["chk_time_short"].bounds.y
+        self.cursor.x = self.ui["chk_enemy_all"].bounds.x
+        self.cursor.y = self.ui["chk_enemy_all"].bounds.y
 
     def change_locale(self):
         #self.ui["txt_timeattack"].set_text(self.parent.t("timeattack"))
@@ -49,20 +49,22 @@ class SceneModeTimeAttack(GameScene):
         
     def setup_ui(self):
         retimg = self.parent.imgbnk.get("larrow")
+        nextimg = self.parent.imgbnk.get("rarrow")
         self.ui = {
             "return": GUIImage(pos(0)+4,pos(0)+4,retimg.page, Bounds(retimg.x, retimg.y, retimg.w, retimg.h),pyxel.COLOR_BLACK),
-            "next": GUIImage(pos(13),pos(18),0, Bounds(8, 72, 8, 8),pyxel.COLOR_BLACK),
-            "txt_timeattack" : GUIText(self.parent.t("txt_timeattack"), pos(3),pos(1), self.parent.jp_font12, pyxel.COLOR_GREEN),
-            "txt_time": GUIText(self.parent.t("txt_time"), pos(1), pos(3),self.parent.jp_fontmisaki,color1=pyxel.COLOR_WHITE),
-            "chk_time_short" : GUICheckbox(f"{TIME_REAL[TimeAttackRule.TYPE_TIME_SHORT]}", pos(2), pos(4)+4,font=self.parent.jp_fontmisaki,color1=pyxel.COLOR_WHITE),
-            "chk_time_mid" : GUICheckbox(f"{TIME_REAL[TimeAttackRule.TYPE_TIME_MIDDLE]}", pos(5), pos(4)+4,font=self.parent.jp_fontmisaki,color1=pyxel.COLOR_WHITE),
-            "chk_time_long" : GUICheckbox(f"{TIME_REAL[TimeAttackRule.TYPE_TIME_LONG]}", pos(9), pos(4)+4,font=self.parent.jp_fontmisaki,color1=pyxel.COLOR_WHITE),
-            "txt_enemy": GUIText(self.parent.t("txt_enemy"), pos(1), pos(6),self.parent.jp_fontmisaki,color1=pyxel.COLOR_WHITE),
-            "chk_enemy_all" : GUICheckbox("ALL", pos(2), pos(7)+4,font=self.parent.jp_fontmisaki,color1=pyxel.COLOR_WHITE),
-            "chk_enemy_vanguard" : GUICheckbox("DD,CL,CA", pos(9), pos(7)+4,font=self.parent.jp_fontmisaki,color1=pyxel.COLOR_WHITE),
-            "chk_enemy_smallship" : GUICheckbox("SS,DD", pos(2), pos(9),font=self.parent.jp_fontmisaki,color1=pyxel.COLOR_WHITE),
-            "chk_enemy_airforce" : GUICheckbox("CVL,CV", pos(9), pos(9),font=self.parent.jp_fontmisaki,color1=pyxel.COLOR_WHITE),
-            "chk_enemy_highfire" : GUICheckbox("CV,BC,BB", pos(2), pos(10)+4,font=self.parent.jp_fontmisaki,color1=pyxel.COLOR_WHITE),
+            "hist": GUIImage(pos(13),pos(0)+4, nextimg.page, Bounds(nextimg.x, nextimg.y, nextimg.w, nextimg.h),pyxel.COLOR_BLACK),
+            "next": GUIImage(pos(13)+4,pos(18), retimg.page, Bounds(retimg.x, retimg.y, retimg.w, retimg.h),pyxel.COLOR_BLACK,rotate=180),
+            "txt_timeattack" : GUIText(self.parent.t("txt_timeattack"), pos(2),pos(0)+4, self.parent.jp_font12, pyxel.COLOR_GREEN),
+            "txt_enemy": GUIText(self.parent.t("txt_enemy"), pos(1), pos(3),self.parent.jp_fontmisaki,color1=pyxel.COLOR_WHITE),
+            "chk_enemy_all" : GUICheckbox("ALL", pos(2), pos(4)+4,font=self.parent.jp_fontmisaki,color1=pyxel.COLOR_WHITE),
+            "chk_enemy_vanguard" : GUICheckbox("DD,CL,CA", pos(9), pos(4)+4,font=self.parent.jp_fontmisaki,color1=pyxel.COLOR_WHITE),
+            "chk_enemy_smallship" : GUICheckbox("SS,DD", pos(2), pos(6),font=self.parent.jp_fontmisaki,color1=pyxel.COLOR_WHITE),
+            "chk_enemy_airforce" : GUICheckbox("CVL,CV", pos(9), pos(6),font=self.parent.jp_fontmisaki,color1=pyxel.COLOR_WHITE),
+            "chk_enemy_highfire" : GUICheckbox("CV,BC,BB", pos(2), pos(7)+4,font=self.parent.jp_fontmisaki,color1=pyxel.COLOR_WHITE),
+            "txt_time": GUIText(self.parent.t("txt_time"), pos(1), pos(9),self.parent.jp_fontmisaki,color1=pyxel.COLOR_WHITE),
+            "chk_time_short" : GUICheckbox(f"{TIME_REAL[TimeAttackRule.TYPE_TIME_SHORT]}", pos(2), pos(10)+4,font=self.parent.jp_fontmisaki,color1=pyxel.COLOR_WHITE),
+            "chk_time_mid" : GUICheckbox(f"{TIME_REAL[TimeAttackRule.TYPE_TIME_MIDDLE]}", pos(5), pos(10)+4,font=self.parent.jp_fontmisaki,color1=pyxel.COLOR_WHITE),
+            "chk_time_long" : GUICheckbox(f"{TIME_REAL[TimeAttackRule.TYPE_TIME_LONG]}", pos(9), pos(10)+4,font=self.parent.jp_fontmisaki,color1=pyxel.COLOR_WHITE),
             "txt_firstlv": GUIText(self.parent.t("txt_firstlv"), pos(1), pos(12),self.parent.jp_fontmisaki,color1=pyxel.COLOR_WHITE),
             "chk_lv1only" : GUICheckbox(self.parent.t("chk_lv1only"), pos(2), pos(13),font=self.parent.jp_fontmisaki,color1=pyxel.COLOR_WHITE),
             "chk_lv2only" : GUICheckbox(self.parent.t("chk_lv2only"), pos(8), pos(13),font=self.parent.jp_fontmisaki,color1=pyxel.COLOR_WHITE),
@@ -77,40 +79,30 @@ class SceneModeTimeAttack(GameScene):
             
         self.ui["return"].selectable = True
         self.ui["return"].set_round(
-            bottomui=self.ui["chk_time_short"]
+            bottomui=self.ui["chk_enemy_all"],
+            rightui="hist"
+        )
+        self.ui["hist"].selectable = True
+        self.ui["hist"].set_round(
+            upui="next",
+            leftui="return",
+            bottomui="chk_enemy_vanguard"
         )
         self.ui["next"].selectable = True
         self.ui["next"].set_round(
-            upui=self.ui["chk_lv3lots"]
+            upui=self.ui["chk_lv3lots"],
+            bottomui="hist"
         )
-        self.ui["chk_time_short"].text.set_size(pos(1),pos(1)); 
-        self.ui["chk_time_short"].set_round(
-            upui=self.ui["return"],
-            rightui=self.ui["chk_time_mid"],
-            bottomui=self.ui["chk_enemy_all"]
-        )
-        self.ui["chk_time_mid"].text.set_size(pos(2),pos(1))
-        self.ui["chk_time_mid"].set_round(
-            upui=self.ui["return"],
-            leftui=self.ui["chk_time_short"],
-            rightui=self.ui["chk_time_long"],
-            bottomui=self.ui["chk_enemy_all"]
-        )
-        self.ui["chk_time_long"].text.set_size(pos(2),pos(1))
-        self.ui["chk_time_long"].set_round(
-            upui=self.ui["return"],
-            leftui=self.ui["chk_time_mid"],
-            bottomui=self.ui["chk_enemy_all"]
-        )
+        #------------------------------------------------------------
         self.ui["chk_enemy_all"].text.set_size(pos(1),pos(1))
         self.ui["chk_enemy_all"].set_round(
-            upui=self.ui["chk_time_short"],
+            upui=self.ui["return"],
             rightui=self.ui["chk_enemy_vanguard"],
             bottomui=self.ui["chk_enemy_smallship"]
         )
         self.ui["chk_enemy_vanguard"].text.set_size(pos(4),pos(1))
         self.ui["chk_enemy_vanguard"].set_round(
-            upui=self.ui["chk_time_short"],
+            upui=self.ui["hist"],
             leftui=self.ui["chk_enemy_all"],
             bottomui=self.ui["chk_enemy_airforce"]
         )
@@ -129,17 +121,40 @@ class SceneModeTimeAttack(GameScene):
         self.ui["chk_enemy_highfire"].text.set_size(pos(2),pos(1))
         self.ui["chk_enemy_highfire"].set_round(
             upui=self.ui["chk_enemy_smallship"],
+            bottomui=self.ui["chk_time_short"]
+        )
+        
+        #---------------------------------------------------------------
+        self.ui["chk_time_short"].text.set_size(pos(1),pos(1)); 
+        self.ui["chk_time_short"].set_round(
+            upui=self.ui["chk_enemy_highfire"],
+            rightui=self.ui["chk_time_mid"],
             bottomui=self.ui["chk_lv1only"]
         )
+        self.ui["chk_time_mid"].text.set_size(pos(2),pos(1))
+        self.ui["chk_time_mid"].set_round(
+            upui=self.ui["chk_enemy_highfire"],
+            leftui=self.ui["chk_time_short"],
+            rightui=self.ui["chk_time_long"],
+            bottomui=self.ui["chk_lv1only"]
+        )
+        self.ui["chk_time_long"].text.set_size(pos(2),pos(1))
+        self.ui["chk_time_long"].set_round(
+            upui=self.ui["chk_enemy_airforce"],
+            leftui=self.ui["chk_time_mid"],
+            bottomui=self.ui["chk_lv2only"]
+        )
+
+        #---------------------------------------------------------------
         self.ui["chk_lv1only"].text.set_size(pos(1),pos(1))
         self.ui["chk_lv1only"].set_round(
-            upui=self.ui["chk_enemy_highfire"],
+            upui=self.ui["chk_time_short"],
             rightui=self.ui["chk_lv2only"],
             bottomui=self.ui["chk_lv3only"]
         )
         self.ui["chk_lv2only"].text.set_size(pos(1),pos(1))
         self.ui["chk_lv2only"].set_round(
-            upui=self.ui["chk_enemy_highfire"],
+            upui=self.ui["chk_time_mid"],
             leftui=self.ui["chk_lv1only"],
             bottomui="chk_lv1_2"
         )
@@ -202,6 +217,13 @@ class SceneModeTimeAttack(GameScene):
             #self.parent.setup_start()
         elif self.select == "next":
             self.decide_select()
+        
+        elif self.select == "hist":
+            self.parent.sound.play_select()
+            self.parent.current_scene = "resulttimeattack"
+            self.parent.states.timeattack_time = self.rule_select["time"]
+            self.parent.states.timeattack_enemies = self.rule_select["forces"]
+            self.parent.setup_timeattack_result()
         
         elif self.select in LIMIT_TIME_STR:
             self.rule_select["time"] = LIMIT_TIME_STR.index(self.select)

@@ -101,6 +101,10 @@ class MainStageScene(GameScene):
         self.states.gameend_interval = 0
         self.states.is_success = False
         self.states.is_fail = False
+        self.states.debuff_appear = {
+            "enabled" : False,
+            "remain_time" : 10,
+        }
         self.states.result = {
             "drawtime" : 15,
             "ranktime" : 30,
@@ -156,7 +160,6 @@ class MainStageScene(GameScene):
             return
         
         rndx = pyxel.rndi(0, pyxel.width - 8)
-
         if (self.player.hp / self.player.maxhp) < 0.4:
             rnd_hpfull = pyxel.rndi(1, 100)
             rndmax = self.parent.states.appear_damecon[1]
@@ -166,6 +169,7 @@ class MainStageScene(GameScene):
                 self.damecons.append(Item(self, Item.TYPE_HPFULL, rndx, 0))
                 return
             
+        rndx = pyxel.rndi(0, pyxel.width - 8)
         if (self.player.hp / self.player.maxhp) < 0.7:
             rnd_hphalf = pyxel.rndi(1, 100)
             rndmax = self.parent.states.appear_juice[1]
@@ -176,32 +180,44 @@ class MainStageScene(GameScene):
                 self.damecons.append(Item(self, Item.TYPE_HPHALF, rndx, 0))
                 return
         
+        rndx = pyxel.rndi(0, pyxel.width - 8)
         rnd_boost = pyxel.rndi(1, 100)
         if self.parent.states.appear_curry[0] <= rnd_boost <= self.parent.states.appear_curry[1]:
             self.damecons.append(Item(self, Item.TYPE_BOOST, rndx, 0))
             return
         
+        rndx = pyxel.rndi(0, pyxel.width - 8)
         rnd_invincible = pyxel.rndi(1, 100)
         if self.parent.states.appear_redcurry[0] <= rnd_invincible <= self.parent.states.appear_redcurry[1]:
             self.damecons.append(Item(self, Item.TYPE_INVINCIBLE, rndx, 0))
             return
         
+        rndx = pyxel.rndi(0, pyxel.width - 8)
         rnd_rader = pyxel.rndi(1, 100)
         if self.parent.states.appear_rader1[0] <= rnd_rader <= self.parent.states.appear_rader1[1]:
             self.damecons.append(Item(self, Item.TYPE_RADER_1, rndx, 0))
             return
         
+        rndx = pyxel.rndi(0, pyxel.width - 8)
         rnd_rader = pyxel.rndi(1, 100)
         if self.parent.states.appear_rader2[0] <= rnd_rader <= self.parent.states.appear_rader2[1]:
             self.damecons.append(Item(self, Item.TYPE_RADER_2, rndx, 0))
             
+        rndx = pyxel.rndi(0, pyxel.width - 8)
         rnd_shield = pyxel.rndi(1, 100)
         if self.parent.states.appear_shield1[0] <= rnd_shield <= self.parent.states.appear_shield1[1]:
             self.damecons.append(Item(self, Item.TYPE_SHIELD, rndx, 0))
 
+        rndx = pyxel.rndi(0, pyxel.width - 8)
         rnd_cat = pyxel.rndi(1, 100)
         if self.parent.states.appear_cat[0] <= rnd_cat <= self.parent.states.appear_cat[1]:
             self.damecons.append(Item(self, Item.TYPE_LEVELUP, rndx, 0))
+            
+        if not self.states.debuff_appear["enabled"]:
+            rndx = pyxel.rndi(0, pyxel.width - 8)
+            rnd_gold = pyxel.rndi(1, 100)
+            if self.parent.states.appear_goldbox[0] <= rnd_gold <= self.parent.states.appear_goldbox[1]:
+                self.damecons.append(Item(self, Item.TYPE_GOLDBOX, rndx, 0))
         
     def generate_enemy_each(self, ratevalue: int, appearlv: int, rnx: float, rny: float, csvkey: list, lencsv: int, wavedict: dict):
         for e in range(0, lencsv):
@@ -255,8 +271,16 @@ class MainStageScene(GameScene):
     def generate_enemy(self):
         #---new code
         if self.parent.states.current_gamemode == GameMode.TYPE_TIMEATTACK:
+            #---remain time is less than 3, don't appear an enemy.
+            if self.play_time < 3:
+                return
+
+            finterval = self.enemydata["wave"][0]["frame_interval"]
+            if self.states.debuff_appear["enabled"]:
+                finterval /= 2
+                
             #--- timeattack is wave 0
-            if pyxel.frame_count % self.enemydata["wave"][0]["frame_interval"] == 0:
+            if pyxel.frame_count % finterval == 0:
                 typernd = pyxel.rndi(1, 100)
                 rnx = pyxel.rndi(8, pyxel.width-8)
                 rny = pyxel.rndi(1, 3) * 8
@@ -289,7 +313,11 @@ class MainStageScene(GameScene):
                 self.explodes.append(LevelEffect(self.player.x, self.player.y))
             
 
-            if pyxel.frame_count % wave["frame_interval"] == 0:
+            finterval = wave["frame_interval"]
+            if self.states.debuff_appear["enabled"]:
+                finterval /= 2
+                
+            if pyxel.frame_count % finterval == 0:
                 typernd = pyxel.rndi(1, 100)
                 rnx = pyxel.rndi(8, pyxel.width-8)
                 rny = pyxel.rndi(1, 3) * 8
@@ -473,7 +501,7 @@ class MainStageScene(GameScene):
     def check_prepare_gameend(self):
         flag = False
         if self.gamemode == GameMode.TYPE_TIMEATTACK:
-            if (self.play_time < 0) or (self.player.is_dead()):
+            if (self.play_time < 0) or (self.player.is_dead() and not self.parent.is_test):
                 if not self.states.is_gameend:
                     self.parent.sound.play_gameclear()
                     #---copy to draw result
@@ -481,7 +509,27 @@ class MainStageScene(GameScene):
                         for i in range(0, 3): #classtype: normal, enhanced, super
                             self.states.result["classpoint"][cls[0]][i][0] = cls[1].summary_cur(i)
                             self.states.result["classpoint"][cls[0]][i][1] = cls[1].summary_max(i)
-                    self.states.result["userrank"] = self.points.judgement()
+                    self.states.result["userrank"] = self.points.judgement(self.player.is_dead())
+                    print(f"commands len={len(self.player.job.commands)}")
+                    serjs = self.points.serialize(
+                        self.parent.states.current_gamemode,
+                        {
+                            "lv" : self.player.lv,
+                            "hp" : self.player.hp,
+                            "maxhp" : self.player.maxhp,
+                            "mainwpn" : self.player.job.commands[0].type,
+                            "subwpn" : self.player.job.commands[1].type,
+                            "time": self.parent.states.timeattack_time,
+                            "forces" : self.parent.states.timeattack_enemies,
+                            "freqlv" : self.parent.states.timeattack_firstlv,
+                        }, self.parent.states.current_date,
+                        self.parent.states.current_player,
+                        self.player.is_death, self.states.result["userrank"]
+                    )
+                    self.parent.data_man.set_timeattack_cleardata(self.parent.states.timeattack_time,self.parent.states.timeattack_enemies,serjs)
+                    if self.parent.config["save_score"]:
+                        self.parent.data_man.save_result()
+                    
                 self.states.is_gameend = True
                 
                 
@@ -498,6 +546,29 @@ class MainStageScene(GameScene):
                             self.states.result["classpoint"][cls[0]][i][0] = cls[1].summary_cur(i)
                             self.states.result["classpoint"][cls[0]][i][1] = cls[1].summary_max(i)
                     self.states.result["userrank"] = self.points.judgement()
+                    if self.summary_wave_count < 1:
+                        self.states.result["userrank"] = GamePoint.RANK_C
+                    elif self.summary_wave_count == 1:
+                        self.states.result["userrank"] -= 1
+                        if self.states.result["userrank"] < 0:
+                            self.states.result["userrank"] = GamePoint.RANK_C
+                    serjs = self.points.serialize(
+                        self.parent.states.current_gamemode,
+                        {
+                            "lv" : self.player.lv,
+                            "hp" : self.player.hp,
+                            "maxhp" : self.player.maxhp,
+                            "mainwpn" : self.player.job.commands[0].type,
+                            "subwpn" : self.player.job.commands[1].type,
+                            "play_time": self.play_time,
+                            "wave" : self.summary_wave_count,
+                        }, self.parent.states.current_date,
+                        self.parent.states.current_player,
+                        self.player.is_death, self.states.result["userrank"]
+                    )
+                    self.parent.data_man.set_survival_cleardata(self.parent.states.survival_enemies, serjs)
+                    if self.parent.config["save_score"]:
+                        self.parent.data_man.save_result()
                 self.states.is_gameend = True
                 flag = True
         return flag
@@ -631,7 +702,7 @@ class MainStageScene(GameScene):
                 
                 
         if self.states.result["is_drawend"]:
-            if self.keyman.is_cancel():
+            if self.keyman.is_cancel() or pyxel.btnr(pyxel.MOUSE_BUTTON_LEFT):
                 self.parent.current_scene = "playerselect"
                 self.parent.setup_selectplayer()
 
@@ -648,13 +719,51 @@ class MainStageScene(GameScene):
 
         #### below is active game elements #################################################
         #---move player
-        if (pyxel.btn(pyxel.KEY_RIGHT) or pyxel.btn(pyxel.KEY_D) or pyxel.btn(pyxel.GAMEPAD1_BUTTON_DPAD_RIGHT)) and self.player.x < pyxel.width - 14:
+        #if (pyxel.btn(pyxel.KEY_RIGHT) or pyxel.btn(pyxel.KEY_D) or pyxel.btn(pyxel.GAMEPAD1_BUTTON_DPAD_RIGHT)) and self.player.x < pyxel.width - 14:
+        
+
+        if self.keyman.release_right():
+            self.keyman.left_pressed = False
+            self.keyman.second_right_pressed = False
+            self.keyman.right_pressed = not self.keyman.right_pressed
+            self.keyman.right_pressframe = pyxel.frame_count
+        
+        if self.keyman.release_left():
+            self.keyman.right_pressed = False
+            self.keyman.second_left_pressed = False
+            self.keyman.left_pressed = not self.keyman.left_pressed
+            self.keyman.left_pressframe = pyxel.frame_count
+
+        if self.keyman.is_right(True):
             self.player.dir.x = 1
-            if self.keyman.is_thirdaction(True):
+            if not self.keyman.second_right_pressed:
+                self.keyman.second_right_pressed = True
+                if abs(pyxel.frame_count - self.keyman.right_pressframe) >= 7:
+                    self.keyman.right_pressed = False
+                    self.keyman.second_right_pressed = False
+                    self.keyman.right_pressframe = 0
+            
+            if (
+                (self.keyman.right_pressed and self.keyman.second_right_pressed)
+                or
+                (self.keyman.is_dashaction(True))
+            ):
                 self.player.dir.x = 3
-        elif (pyxel.btn(pyxel.KEY_LEFT) or pyxel.btn(pyxel.KEY_A) or pyxel.btn(pyxel.GAMEPAD1_BUTTON_DPAD_LEFT)) and self.player.x > -2:
+        #elif (pyxel.btn(pyxel.KEY_LEFT) or pyxel.btn(pyxel.KEY_A) or pyxel.btn(pyxel.GAMEPAD1_BUTTON_DPAD_LEFT)) and self.player.x > -2:
+        elif self.keyman.is_left(True):
             self.player.dir.x = -1
-            if self.keyman.is_thirdaction(True):
+            if not self.keyman.second_left_pressed:
+                self.keyman.second_left_pressed = True
+                if abs(pyxel.frame_count - self.keyman.left_pressframe) >= 7:
+                    self.keyman.left_pressed = False
+                    self.keyman.second_left_pressed = False
+                    self.keyman.left_pressframe = 0
+            
+            if (
+                (self.keyman.left_pressed and self.keyman.second_left_pressed)
+                or
+                (self.keyman.is_dashaction(True))
+            ):
                 self.player.dir.x = -3
         else:
             self.player.dir.x = 0
@@ -738,6 +847,11 @@ class MainStageScene(GameScene):
             if dame.check_collision(self.player):
                 if dame.type == Item.TYPE_LEVELUP:
                     self.parent.sound.play_levelup()
+                elif dame.type == Item.TYPE_GOLDBOX:
+                    self.parent.sound.play_debuff()
+                    self.states.debuff_appear["enabled"] = True
+                    self.states.debuff_appear["remain_time"] = 10
+                    self.ui["inp_time"].color1 = pyxel.COLOR_RED
                 else:
                     self.parent.sound.play_getitem()
                 dame.effect(self.player)
@@ -750,6 +864,14 @@ class MainStageScene(GameScene):
             if explode.is_explode:
                 self.explodes.remove(explode)
             
+        #---debuff effect
+        if self.states.debuff_appear["enabled"]:
+            if pyxel.frame_count % 30 == 0:
+                self.states.debuff_appear["remain_time"] -= 1
+            if self.states.debuff_appear["remain_time"] <= 0:
+                self.states.debuff_appear["enabled"] = False
+                self.ui["inp_time"].color1 = pyxel.COLOR_WHITE
+        
         self.update_status()
             
         
@@ -870,7 +992,7 @@ class MainStageScene(GameScene):
             bbcur = bbp[0]
             bbmax = bbp[1]
             if bbmax > 0:
-                bbi = IBNK.get("eBC_a")
+                bbi = IBNK.get("eBB_a")
                 pyxel.blt(pos(8), pos(15), bbi.page, bbi.x, bbi.y, bbi.w, bbi.h, pyxel.COLOR_BLACK)            
                 pyxel.text(pos(11), pos(15), "BB-N", pyxel.COLOR_WHITE,font=self.parent.jp_fontmisaki)
                 pyxel.text(pos(11), pos(16), f"{bbcur}/{bbmax}", pyxel.COLOR_WHITE,font=self.parent.jp_fontmisaki)

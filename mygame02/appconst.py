@@ -33,6 +33,8 @@ class TimeAttackRule:
     TYPE_LV1 = 4
     TYPE_LV2 = 5
     TYPE_LV3 = 6
+    TIME_LIST = ["60", "120", "180"]
+    FORCE_LIST = ["ALL", "DD,CL,CA", "SS,DD", "CVL,CV", "CV,BC,BB"]
     def __init__(self):
         self.current = 0
 
@@ -42,6 +44,7 @@ class SurvivalRule:
     TYPE_FORCES_AIRFORCE = 2
     TYPE_FORCES_HIGHFIRE = 3
     TYPE_FORCES_ALL = 4
+    FORCE_LIST = ["DD,CL,CA", "SS,DD", "CVL,CV", "CV,BC,BB","ALL"]
     def __init__(self):
         pass
 class ShipKind:
@@ -60,20 +63,21 @@ class ShipKind:
     
 
 class PlayableCharacterSelector:
-    def __init__(self, title, jobtype, img_x):
+    def __init__(self, title, jobtype, img_x, previewkey):
         self.title: str = title
         self.jobtype: int = jobtype
         self.image_x: int = img_x
+        self.previewkey = previewkey
 
 CSV_PLAYABLE = {
-    "img_ss" : PlayableCharacterSelector("SS U47", 0, 32),
-    "img_dd" : PlayableCharacterSelector("DD Ayanami",1, 48),
-    "img_asdg" : PlayableCharacterSelector("ASDG Changchun",2, 64),
-    "img_cl" : PlayableCharacterSelector("CL Atlanta",3, 80),
-    "img_ca" : PlayableCharacterSelector("CA Quincy",4, 96),
-    "img_cvl" : PlayableCharacterSelector("CVL Junyo",5, 112),
-    "img_cv" : PlayableCharacterSelector("CV-16 Lexington",6, 128),
-    "img_bc" : PlayableCharacterSelector("BC HMS Renown",7, 144)
+    "img_ss" : PlayableCharacterSelector("SS U47", 0, 32, "SS_preview"),
+    "img_dd" : PlayableCharacterSelector("DD Ayanami",1, 48, "DD_preview"),
+    "img_asdg" : PlayableCharacterSelector("ASDG Changchun",2, 64, "ASDG_preview"),
+    "img_cl" : PlayableCharacterSelector("CL Atlanta",3, 80, "CL_preview"),
+    "img_ca" : PlayableCharacterSelector("CA Quincy",4, 96, "CA_preview"),
+    "img_cvl" : PlayableCharacterSelector("CVL Junyo",5, 112, "CVL_preview"),
+    "img_cv" : PlayableCharacterSelector("CV-16 Lexington",6, 128, "CV_preview"),
+    "img_bc" : PlayableCharacterSelector("BC HMS Renown",7, 144, "BC_preview")
 }
 class CursorImagePosition(NamedTuple):
     x: int
@@ -119,6 +123,9 @@ WEAPON_IMAGES = {
     "BBGUN" : (16, 16),
     "DEPTHCHARGE" : (8, 16)
 }
+WEAPON_IMGKEY = [
+    "gun","torpedo","jet1","bbgun1","aashoot","missile","depthcharge","asa_acraft"
+]
 CSV_ATTACKWEAK = [
     #SS     DD     ADSG   CL     CA     CVL    CV     BC,    BB
     [False, True,  True,  True,  True,  True,  True,  True,  True], #---GUN

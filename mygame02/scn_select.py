@@ -139,6 +139,7 @@ class SelectScene(GameScene):
                 self.parent.setup_survival_rule()
         else:
             self.parent.sound.play_select()
+            self.parent.states.current_player = self.select
             self.parent.setup_mainstage(CSV_PLAYABLE[self.select].jobtype, self.equiptype)
             self.parent.current_scene = "mainstage"
         

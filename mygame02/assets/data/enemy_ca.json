@@ -93,7 +93,7 @@
                 },
                 "move_interval" : 2,
                 "movespeed" : 1,
-                "point" : 25,
+                "point" : 30,
                 "move_additional" : {
                     "area" : {
                         "front" : false,
